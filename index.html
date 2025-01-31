@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <title>Coldplay Moon Glass Effect</title>
     <style>
         body {
@@ -11,30 +14,190 @@
             background-color: #111;
             color: white;
         }
-        canvas {
-            max-width: 100%;
-            margin-top: 20px;
-            border-radius: 10px;
+        #title{
+            margin: 52px;
+            scale: 0.75;
+            text-align: center;
         }
-        .controls {
-            margin-top: 20px;
+        #uploadcontainer {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 4px dashed #333;
+            border-radius: 16px;
+            background-color: #222;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            margin: 0px auto;
+            text-align: center;
         }
-        #brightnessThreshold{
+        #uploadcontainer:hover {
+            background-color: #333;
+            border-color: #555;
+        }
+        #upload{
+            width: 100%;
+            height: 100%;
+            opacity: 0.01;
+        }
+        #uploadtitle{
+            position: absolute;
+            width: 100%;
+            font-family: "Inter", serif;
+            font-optical-sizing: auto;
+            font-weight: 600;
+            font-style: normal;
+            font-size: 20px;
+            font-weight: 800;
+            color: #fff;
+            top: 220px;
+            width: 100%;
+        }
+        #uploadsubtitle{
+            position: absolute;
+            width: 100%;
+            font-family: "Inter", serif;
+            font-optical-sizing: auto;
+            font-weight: 500;
+            font-style: normal;
+            font-size: 16px;
+            color: #ffffffc0;
+            top: 256px;
+            width: 100%;
+        }
+        #browselink{
+            font-weight: 700;
+            color: #fff;
+        }
+
+        #controls {
+            display: none;
+            margin-top: 40px;
+        }
+        .slider {
+            --thumbSize: 32px;
+            --trackSize: 8px;
+            --thumbBg: #fff;
+            --trackBg: #333;
+            --progressBg: #ED1B24;
+            --webkitProgressPercent: 0%;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+
             width: 500px;
+            height: 40px;
+            background: transparent;
+            padding: 0px;
+            margin: 0px;
+        }
+        .slider:focus {
+            outline: none;
+        }
+        /* Thumb */
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: var(--thumbSize);
+            height: var(--thumbSize);
+            background-color: var(--thumbBg);
+            background: url('heart.svg');
+            border-radius: calc(var(--thumbSize) / 2);
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            margin-top: calc(((var(--thumbSize) - var(--trackSize)) / 2) * -1);
+        }
+        .slider::-moz-range-thumb {
+            -moz-appearance: none;
+            appearance: none;
+            width: var(--thumbSize);
+            height: var(--thumbSize);
+            background-color: var(--thumbBg);
+            background: url('heart.svg');
+            border-radius: calc(var(--thumbSize) / 2);
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            margin-top: calc(((var(--thumbSize) - var(--trackSize)) / 2) * -1);
+        }
+        .slider::-ms-thumb {
+            -ms-appearance: none;
+            appearance: none;
+            width: var(--thumbSize);
+            height: var(--thumbSize);
+            background-color: var(--thumbBg);
+            background: url('heart.svg');
+            border-radius: calc(var(--thumbSize) / 2);
+            border: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            margin-top: calc(((var(--thumbSize) - var(--trackSize)) / 2) * -1);
+        }
+        /* Track */
+        .slider::-webkit-slider-runnable-track {
+            height: var(--trackSize);
+            background-image: linear-gradient(
+            90deg,
+            var(--progressBg) var(--webkitProgressPercent),
+            var(--trackBg) var(--webkitProgressPercent)
+            );
+            border-radius: calc(var(--trackSize) / 2);
+        }
+        .slider::-moz-range-track {
+            height: var(--trackSize);
+            background-color: var(--trackBg);
+            border-radius: calc(var(--trackSize) / 2);
+        }
+        .slider::-ms-track {
+            height: var(--trackSize);
+            background-color: var(--trackBg);
+            border-radius: calc(var(--trackSize) / 2);
+        }
+        /* Progress */
+        .slider::-moz-range-progress {
+            height: var(--trackSize);
+            background-color: var(--progressBg);
+            border-radius: calc(var(--trackSize) / 2) 0 0 calc(var(--trackSize) / 2);
+        }
+        .slider::-ms-fill-lower {
+            height: var(--trackSize);
+            background-color: var(--progressBg);
+            border-radius: calc(var(--trackSize) / 2) 0 0 calc(var(--trackSize) / 2);
+        }
+
+        canvas {
+            max-width: 95%;
+            margin-top: 40px;
+            border-radius: 12px;
         }
     </style>
 </head>
 <body>
-    <h1>Coldplay Moon Glass</h1>
-    <input type="file" id="upload" accept="image/*">
-    <div class="controls">
-        <label for="brightnessThreshold">Hearts:</label>
-        <input type="range" id="brightnessThreshold" min="-500" max="-100" value="-200">
+    <div id="title">
+        <svg width="648" height="100" viewBox="0 0 648 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M121.36 98.1C147.897 98.1 169.41 76.5873 169.41 50.05C169.41 23.5127 147.897 2 121.36 2C94.8227 2 73.31 23.5127 73.31 50.05C73.31 76.5873 94.8227 98.1 121.36 98.1Z" fill="white"/>
+            <path d="M51.9403 97.3584C23.9103 95.6584 -0.189719 69.8784 5.97028 40.8084C10.8803 17.6784 31.2403 1.57841 54.8103 2.00841C61.8303 2.12841 66.5903 2.09838 66.8203 10.3884C67.0803 20.2151 67.2036 30.0351 67.1903 39.8484C67.1903 40.1951 67.0469 40.4651 66.7603 40.6584C64.7403 42.0684 62.5703 43.4984 61.5403 45.7184C58.6003 52.0384 62.2603 55.0184 66.7203 58.4884C66.9869 58.7017 67.1236 58.9784 67.1303 59.3184C67.2969 69.4117 67.2136 79.5017 66.8803 89.5884C66.6103 97.8084 57.7203 97.6984 51.9403 97.3584ZM215.02 59.3284C219.894 59.7684 223.02 59.8784 224.4 59.6584C229.94 58.7884 231.19 61.8984 231.31 66.7684C231.51 74.7684 231.514 82.7484 231.32 90.7084C231.2 95.6084 228.67 95.6784 224.7 95.7384C209.34 95.9851 193.957 95.8684 178.55 95.3884C177.948 95.3703 177.376 95.1196 176.955 94.6889C176.533 94.2582 176.295 93.6809 176.29 93.0784C176.06 64.8584 175.91 36.6684 175.93 8.44838C175.94 5.17838 177.15 3.3984 180.5 3.3684C194.32 3.26173 204.444 3.26507 210.87 3.37841C213.33 3.42841 214.46 5.18839 214.5 7.57839C214.8 24.6584 214.82 41.7417 214.56 58.8284C214.56 59.1351 214.714 59.3017 215.02 59.3284ZM239.72 94.9484C238.06 94.0484 237.237 92.5317 237.25 90.3984C237.344 62.7117 237.4 35.0251 237.42 7.3384C237.43 3.5484 240.8 3.61841 243.5 3.56841C254.807 3.39507 266.117 3.31505 277.43 3.32839C302.86 3.36839 323.63 24.0484 323.75 49.3784C323.87 73.1884 304.39 95.8284 279.5 95.6384C266.8 95.5384 254.114 95.455 241.44 95.3884C240.82 95.3817 240.247 95.235 239.72 94.9484ZM332.03 95.2384C331.664 95.2136 331.319 95.059 331.057 94.8023C330.795 94.5457 330.633 94.2038 330.6 93.8384C330.327 91.0917 330.18 88.3217 330.16 85.5284C329.95 59.1184 328.92 32.1184 330.42 5.7784C330.441 5.43677 330.562 5.10937 330.766 4.83721C330.971 4.56504 331.251 4.36022 331.57 4.2484C333.79 3.4684 335.6 3.69838 337.77 3.63838C358.077 2.99172 374.63 3.05174 387.43 3.81841C391.244 4.05174 395.274 5.61508 399.52 8.50841C412.24 17.1984 419.17 30.9984 417.19 46.3484C414.92 63.9684 401.14 78.4584 382.94 79.2784C378.527 79.4784 374.114 79.5951 369.7 79.6284C369.307 79.6351 369.114 79.8384 369.12 80.2384C369.32 86.8784 369.19 91.1617 368.73 93.0884C368.19 95.3584 366.07 95.3784 364.07 95.4884C353.41 96.0751 342.73 95.9917 332.03 95.2384ZM463.75 59.3184C467.2 59.4784 479.39 58.1384 479.4 63.3984C479.434 72.8851 479.444 82.3717 479.43 91.8584C479.43 94.5384 477.844 95.8817 474.67 95.8884C459.517 95.9017 444.357 95.8684 429.19 95.7884C425.99 95.7784 424.18 94.6084 424.18 91.1384C424.187 63.2784 424.184 35.4284 424.17 7.5884C424.17 4.7684 425.657 3.32839 428.63 3.26839C442.89 2.96839 453.41 3.13174 460.19 3.75841C463.53 4.05841 462.89 11.8884 462.92 14.1584C463.074 29.0317 463.18 43.9084 463.24 58.7884C463.24 59.1217 463.41 59.2984 463.75 59.3184ZM529.33 88.4984C529.284 88.408 529.214 88.3322 529.128 88.2792C529.041 88.2262 528.942 88.1982 528.84 88.1982C528.739 88.1982 528.639 88.2262 528.553 88.2792C528.467 88.3322 528.396 88.408 528.35 88.4984L525.08 95.0384C524.9 95.4051 524.607 95.5884 524.2 95.5884H492.93C483.02 95.5884 485.16 89.7384 488.3 83.2784C499.8 59.6117 511.484 36.0351 523.35 12.5484C524.924 9.42839 526.554 6.55506 528.24 3.92839C528.334 3.7837 528.464 3.66595 528.618 3.58702C528.771 3.5081 528.942 3.47081 529.114 3.47893C529.285 3.48705 529.451 3.54028 529.594 3.63326C529.738 3.72623 529.854 3.85565 529.93 4.00841C543.664 30.8217 557.114 57.7384 570.28 84.7584C572.55 89.4384 574.01 95.8484 566.39 95.8484C555.584 95.8351 544.75 95.8317 533.89 95.8384C533.65 95.8387 533.415 95.7725 533.21 95.6472C533.005 95.5219 532.839 95.3423 532.73 95.1284L529.33 88.4984ZM599.47 15.2984C599.501 15.3572 599.546 15.4064 599.603 15.4408C599.659 15.4753 599.724 15.4935 599.79 15.4935C599.856 15.4935 599.921 15.4753 599.978 15.4408C600.034 15.4064 600.08 15.3572 600.11 15.2984L605.67 3.84841C605.83 3.51507 606.097 3.34841 606.47 3.34841C617.297 3.33507 628.077 3.32507 638.81 3.31841C643.79 3.31841 645.64 7.43838 643.31 11.6984C632.764 30.985 625.34 44.3984 621.04 51.9384C619.874 53.9784 619.287 55.9651 619.28 57.8984L619.12 90.5884C619.107 93.7884 617.7 95.4484 614.9 95.5684C604.227 96.0351 593.557 95.9384 582.89 95.2784C582.358 95.2466 581.857 95.0182 581.483 94.6375C581.11 94.2569 580.892 93.7511 580.87 93.2184C580.36 81.1884 580.48 69.2284 580.33 57.1884C580.317 55.7684 579.964 54.4351 579.27 53.1884C572.73 41.4617 566.224 29.7451 559.75 18.0384C557.27 13.5484 551.07 3.87839 560.39 3.57839C571.364 3.23839 582.33 3.19174 593.29 3.4384C593.584 3.44507 593.797 3.58174 593.93 3.84841L599.47 15.2984Z" fill="white"/>
+        </svg>
+    </div>
+    <div id="uploadcontainer">
+        <p id="uploadtitle">Upload Image</p>
+        <p id="uploadsubtitle">Drag & drop or <span id="browselink">browse</span></p>
+        <input type="file" id="upload" accept="image/*">
+    </div>
+    <div id="controls">
+        <input type="range" class="slider" id="brightnessThreshold" min="-500" max="-100" value="-200">
     </div>
     <canvas id="canvas"></canvas>
     
     <script>
+        const title = document.getElementById("title");
+        const uploadcontainer = document.getElementById("uploadcontainer");
         const upload = document.getElementById("upload");
+        const controls = document.getElementById('controls');
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
         const brightnessThreshold = document.getElementById("brightnessThreshold");
@@ -44,6 +207,10 @@
         upload.addEventListener("change", (event) => {
             const file = event.target.files[0];
             if (!file) return;
+
+            title.style.display = "none";
+            uploadcontainer.style.display = "none";
+            controls.style.display = "block";
             
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -91,6 +258,31 @@
             ctx.fill();
             ctx.shadowBlur = 0;
         }
+
+        //sliders
+        var isChanging = false;
+
+        function setCSSProperty(x){
+        const percent =
+            ((x.value - x.min) / (x.max - x.min)) * 100;
+            x.style.setProperty("--webkitProgressPercent", `${percent}%`);
+        }
+
+        function handleMove(x){
+        if (!isChanging) return;
+        setCSSProperty(x);
+        }
+        function handleUpAndLeave(){isChanging = false;}
+        function handleDown(){isChanging = true;}
+        [brightnessThreshold].forEach(item => {
+        item.onmousemove = () => {handleMove(item)};
+        item.onmousedown = () => {handleDown()};
+        item.onmouseup = () => {handleUpAndLeave()};
+        item.onmouseleave = () => {handleUpAndLeave()};
+        item.onclick = () => {setCSSProperty(item)};
+        })
+  
+        setCSSProperty(brightnessThreshold);
     </script>
 </body>
 </html>
