@@ -19,13 +19,16 @@
         .controls {
             margin-top: 20px;
         }
+        #brightnessThreshold{
+            width: 500px;
+        }
     </style>
 </head>
 <body>
     <h1>Coldplay Moon Glass</h1>
     <input type="file" id="upload" accept="image/*">
     <div class="controls">
-        <label for="brightnessThreshold">Heart Sensitivity:</label>
+        <label for="brightnessThreshold">Hearts:</label>
         <input type="range" id="brightnessThreshold" min="-500" max="-100" value="-200">
     </div>
     <canvas id="canvas"></canvas>
