@@ -292,8 +292,8 @@
         function drawGlowingHeart(x, y, size, color) {
             ctx.fillStyle = color;
             ctx.shadowColor = color;
-            ctx.shadowBlur = 15;
-            let scale = Math.min(size * 2, 20);
+            ctx.shadowBlur = 10;
+            let scale = Math.min(size * 2, 10);
             ctx.beginPath();
             ctx.moveTo(x, y);
             ctx.bezierCurveTo(x - scale, y - scale * 2, x - scale * 2, y + scale, x, y + scale * 2);
