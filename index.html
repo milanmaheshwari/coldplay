@@ -206,9 +206,8 @@
         const controls = document.getElementById('controls');
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
-        const brightnessThreshold = document.getElementById("brightnessThreshold");
-
-        let img;
+        const sensitivitySlider = document.getElementById("brightnessThreshold");
+        let imgData;
 
         upload.addEventListener("change", (event) => {
             const file = event.target.files[0];
@@ -220,11 +219,12 @@
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                img = new Image();
+                const img = new Image();
                 img.onload = function() {
                     canvas.width = img.width / 2;
                     canvas.height = img.height / 2;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                     applyMoonGlassEffect();
                 };
                 img.src = e.target.result;
@@ -232,35 +232,62 @@
             reader.readAsDataURL(file);
         });
 
-        brightnessThreshold.addEventListener("input", applyMoonGlassEffect);
+        sensitivitySlider.addEventListener("input", applyMoonGlassEffect);
 
         function applyMoonGlassEffect() {
-            if (!img) return;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
-            const threshold = parseInt(-brightnessThreshold.value, 10);
+            ctx.putImageData(imgData, 0, 0);
+            const data = imgData.data;
+            const sensitivity = parseInt(-sensitivitySlider.value);
+            let lightPoints = [];
             
             for (let y = 0; y < canvas.height; y++) {
                 for (let x = 0; x < canvas.width; x++) {
                     const index = (y * canvas.width + x) * 4;
                     let r = data[index], g = data[index + 1], b = data[index + 2];
                     let brightness = (r + g + b) / 3;
-                    if (brightness > threshold) {
-                        drawGlowingHeart(x, y, r, g, b);
+                    if (brightness > sensitivity) {
+                        lightPoints.push({x, y, brightness, color: `rgb(${r}, ${g}, ${b})`});
                     }
                 }
             }
+
+            clusterLights(lightPoints);
         }
 
-        function drawGlowingHeart(x, y, r, g, b) {
-            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.8)`;
-            ctx.shadowColor = `rgba(${r}, ${g}, ${b}, 0.6)`;
-            ctx.shadowBlur = 10;
+        function clusterLights(lightPoints) {
+            let clustered = [];
+            let threshold = 10;
+            
+            lightPoints.forEach(point => {
+                let found = false;
+                clustered.forEach(cluster => {
+                    let dist = Math.hypot(cluster.x - point.x, cluster.y - point.y);
+                    if (dist < threshold) {
+                        cluster.count++;
+                        cluster.x = (cluster.x + point.x) / 2;
+                        cluster.y = (cluster.y + point.y) / 2;
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    clustered.push({x: point.x, y: point.y, count: 1, color: point.color});
+                }
+            });
+            
+            clustered.forEach(cluster => {
+                drawGlowingHeart(cluster.x, cluster.y, cluster.count, cluster.color);
+            });
+        }
+
+        function drawGlowingHeart(x, y, size, color) {
+            ctx.fillStyle = color;
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 15;
+            let scale = Math.min(size * 2, 20);
             ctx.beginPath();
             ctx.moveTo(x, y);
-            ctx.bezierCurveTo(x - 5, y - 10, x - 10, y + 10, x, y + 15);
-            ctx.bezierCurveTo(x + 10, y + 10, x + 5, y - 10, x, y);
+            ctx.bezierCurveTo(x - scale, y - scale * 2, x - scale * 2, y + scale, x, y + scale * 2);
+            ctx.bezierCurveTo(x + scale * 2, y + scale, x + scale, y - scale * 2, x, y);
             ctx.fill();
             ctx.shadowBlur = 0;
         }
@@ -280,7 +307,7 @@
         }
         function handleUpAndLeave(){isChanging = false;}
         function handleDown(){isChanging = true;}
-        [brightnessThreshold].forEach(item => {
+        [sensitivitySlider].forEach(item => {
         item.onmousemove = () => {handleMove(item)};
         item.onmousedown = () => {handleDown()};
         item.onmouseup = () => {handleUpAndLeave()};
@@ -288,7 +315,7 @@
         item.onclick = () => {setCSSProperty(item)};
         })
   
-        setCSSProperty(brightnessThreshold);
+        setCSSProperty(sensitivitySlider);
     </script>
 </body>
 </html>
