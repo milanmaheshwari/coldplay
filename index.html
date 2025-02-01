@@ -14,11 +14,21 @@
             background-color: #111;
             color: white;
         }
-        #title{
-            margin: 52px;
-            scale: 0.75;
-            text-align: center;
-            max-width: 95%;
+        @media (min-width: 960px){
+            #title{
+                margin: 52px;
+                scale: 0.75;
+                text-align: center;
+                max-width: 95%;
+            }
+        }
+        @media (min-width: 0px) and (max-width: 959px){
+            #title{
+                margin: 24px;
+                scale: 0.5;
+                text-align: center;
+                max-width: 95%;
+            }
         }
         #title svg{
             max-width: 95%;
